@@ -19,14 +19,37 @@ $(function(){
 	}
 
 	var setLED = function(toggle){
-		console.log('toggle: ', toggle);
 		$.ajax({
 		   url: 'https://api.particle.io/v1/devices/340029001647343337363432/led?access_token=347a6114f2fdb0e57f753a7eba15599be720457a',
 		   method: 'POST',
 		   data: {  args: toggle },
 		   complete: function(result){
-		   		console.log('result:', result);
+		   		$rv = $(result);
+		   		console.log('result:', $.parseJSON($rv[0].responseText).return_value);
 		   }
+		});
+	}
+
+	var setPWD = function(v){
+		$.ajax({
+		   url: 'https://api.particle.io/v1/devices/340029001647343337363432/pwmled?access_token=347a6114f2fdb0e57f753a7eba15599be720457a',
+		   method: 'POST',
+		   data: {  args: v },
+		   complete: function(result){
+		   		$rv = $(result);
+		   		console.log('result:', $.parseJSON($rv[0].responseText).return_value);
+		   }
+		});
+	}
+
+	var setSlider = function(){
+		$( "#slider" ).slider({
+			max: 30,
+			min: 0,
+			change: function(evt, ui){
+				console.log('slide: ', ui.value);
+				setPWD(ui.value);
+			}
 		});
 	}
 
@@ -39,5 +62,6 @@ $(function(){
 		}
 		setLED($this.text());
 	})
-	readDevice();
+	//readDevice();
+	setSlider();
 });
